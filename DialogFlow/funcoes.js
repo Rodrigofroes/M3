@@ -46,8 +46,6 @@ export async function obterCardChamados(tipoCard = "custom") {
             cartao = criarCustomCard();
             cartao.card.title = chamado.nome;
             cartao.card.subtitle = chamado.descricao;
-            cartao.card.buttons[0].text = "Ver mais";
-            cartao.card.buttons[0].postback = "ver mais";
         } else {
             cartao = criarMessengerCard();
             cartao.title = chamado.nome;

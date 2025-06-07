@@ -23,22 +23,18 @@ export default class DialogFlowControl {
 
     async listarChamados(dados, res) {
         try {
-            const chamadoDAO = new ChamadoDAO();
-            const chamados = await chamadoDAO.buscarTodos();
-
-            for (const chamado of chamados) {
-                res.status(200).json({
-                    "fulfillmentMessages": [{
-                        "text": {
-                            "text": [
-                                `Chamado #${chamado.numero}:\nNome: ${chamado.nome}\nDescrição: ${chamado.descricao}\nStatus: ${chamado.status}`
-                            ]
+            const tipoCard = dados.queryResult.parameters.tipoCard || "custom";
+            const listaCardsChamados = await obterCardChamados(tipoCard);
+            const respostaDF = {
+                "fulfillmentMessages": [
+                    {
+                        "payload": {
+                            "richContent": listaCardsChamados
                         }
-                    }]
-                });
-
-            }
-
+                    }
+                ]
+            };
+            res.status(200).json(respostaDF);
         } catch (error) {
             this.respostaErro(res);
         }
