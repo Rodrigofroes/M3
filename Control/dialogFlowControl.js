@@ -22,62 +22,25 @@ export default class DialogFlowControl {
     }
 
     async listarChamados(dados, res) {
-        const origem = dados?.originalDetectIntentRequest?.source;
-        if (origem) {
-            obterCardChamados("custom").then((cards) => {
-                let respostaDF = {
-                    "fulfillmentMessages": []
-                };
-                respostaDF.fulfillmentMessages.push({
-                    "text": {
-                        "text": [
-                            "Olá, eu sou o bot do Help Desk, em que posso ajudar? \n"
-                            + "Escolha uma opção: \n"
-                            + "1 - Cadastrar chamado \n"
-                            + "2 - Listar chamados \n"
-                            + "3 - Buscar chamado por número \n"
-                        ]
-                    }
+        try {
+            const chamadoDAO = new ChamadoDAO();
+            const chamados = await chamadoDAO.buscarTodos();
+
+            for (const chamado of chamados) {
+                res.status(200).json({
+                    "fulfillmentMessages": [{
+                        "text": {
+                            "text": [
+                                `Chamado #${chamado.numero}:\nNome: ${chamado.nome}\nDescrição: ${chamado.descricao}\nStatus: ${chamado.status}`
+                            ]
+                        }
+                    }]
                 });
-                res.status(200).json(respostaDF);
-            }).catch((err) => {
-                this.respostaErro(res);
-            });
-        } else {
-            obterCardChamados("messenger").then((cards) => {
-                let respostaDF = {
-                    "fulfillmentMessages": []
-                };
-                respostaDF.fulfillmentMessages.push({
-                    "payload": {
-                        "richContent": [[
-                            {
-                                "type": "description",
-                                "title": "Bem vindo ao Help Desk!",
-                                "text": [
-                                    "Estamos muito felizes em ter você por aqui!",
-                                    "Abaixo você encontra os chamados abertos. \n",
-                                ]
-                            },
-                            ...cards,
-                            {
-                                "type": "description",
-                                "title": "Escolha uma opção:"
-                            },
-                            {
-                                "type": "chips",
-                                "options": [
-                                    { "text": "Cadastrar chamado" },
-                                    { "text": "Listar chamados" }
-                                ]
-                            }
-                        ]]
-                    }
-                });
-                res.json(respostaDF);
-            }).catch((erro) => {
-                this.respostaErro(res);
-            });
+
+            }
+
+        } catch (error) {
+            this.respostaErro(res);
         }
     }
 
@@ -101,7 +64,7 @@ export default class DialogFlowControl {
                             `Chamado #${novoChamado.numero} cadastrado com sucesso!`
                         ]
                     },
-                    
+
 
                 }]
             };
