@@ -44,4 +44,14 @@ export default class ChamadoDAO {
             console.log(error);
         }
     }
+
+    obterChamadoPorNumero(numero) {
+        try {
+            return Chamado.findOne({
+                where: { numero: numero }
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
