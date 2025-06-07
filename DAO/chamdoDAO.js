@@ -47,9 +47,7 @@ export default class ChamadoDAO {
 
     obterChamadoPorNumero(numero) {
         try {
-            return Chamado.findOne({
-                where: { numero: numero }
-            });
+            return Chamado.findOne({numero: numero});
         } catch (error) {
             console.log(error);
         }
