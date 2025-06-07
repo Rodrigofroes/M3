@@ -4,7 +4,7 @@ export default class Database {
     static instance;
 
     constructor() {
-        const uri = 'mongodb://localhost:27017/chatbot';
+        const uri = 'mongodb://mongo:340b099cd0bf23c5ccbb@100.42.187.253:9090/?tls=false';
         mongoose.connect(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
